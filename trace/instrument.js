@@ -2,7 +2,7 @@
 // |
 // | (C) Mozilla Corp
 // | licensed under MPL 2.0 http://www.mozilla.org/MPL/
-// \____________________________________________/   
+// \____________________________________________/
 
 define(function(require){
 	var fn = require("../core/fn")
@@ -16,14 +16,14 @@ define(function(require){
 
 	function tracehub(){
 		//TRACE
-		try{ _$_ } catch(e){ 
+		try{ _$_ } catch(e){
 			_$_ = {};
 			(function(){
 				var isNode = typeof process != 'undefined'
 				var isBrowser = typeof window != 'undefined'
 				var isWorker = !isNode && !isBrowser
 
-				if(isNode) global._$_ = _$_
+				if(isNode) { global._$_ = _$_}
 
 				var max_depth = 1
 				var max_count = 5
@@ -31,22 +31,22 @@ define(function(require){
 					var t = typeof i
 					if(t == 'string'){
 
-						if(i.length>100) return i.slice(0,100)+"..."
-						return i
+						if(i.length>100) { return i.slice(0,100)+"..."; }
+						return i;
 					}
-					if(t == 'boolean') return i
+					if(t == 'boolean') { return i; }
 					if(t == 'number') {
-						if( i === Infinity) return "_$_Infinity"
-						if( i == NaN ) return "_$_NaN"
-						return i
+						if( i === Infinity) { return "_$_Infinity"}
+						if( isNaN(i) )  { return "_$_NaN" }
+						return i;
 					}
-					if(t == 'function') return "_$_function"
-					if(t == 'undefined') return "_$_undefined"
+					if(t == 'function') { return "_$_function"; }
+					if(t == 'undefined') { return "_$_undefined"; }
 					if(t == 'object'){
-						if(i === null) return null
+						if(i === null) return null;
 						if(Array.isArray(i)){
-							if(i.length == 0) return []
-							if(d>=max_depth) return "_$_[..]"
+							if(i.length == 0) { return []; }
+							if(d>=max_depth) { return "_$_[..]"; }
 							var o = []
 							for(var k = 0;k<i.length && k<max_count;k++){
 								var m = i[k]
@@ -55,22 +55,22 @@ define(function(require){
 							if(k<i.length){
 								o[k] = "..."
 							}
-							return o
+							return o;
 						}
-						if(d>=max_depth) return "_$_{..}"
+						if(d>=max_depth) { return "_$_{..}"; }
 						var o = {}
-						var c = 0 
-						try{ 
-						var pd 
-						for(var k in i) if(pd = Object.getOwnPropertyDescriptor(i, k)){
+						var c = 0
+						try{
+						var pd
+						for(var k in i) { if(pd = Object.getOwnPropertyDescriptor(i, k)){
 							if(c++>max_count){
 								o["..."] = 1
-								break
+								break;
 							}
-							if(pd.value !== undefined) o[k] = dump(pd.value, d+1)
-						}
+							if(pd.value !== undefined) { o[k] = dump(pd.value, d+1) }
+						}}
 						} catch(e){}
-						return o
+						return o;
 					}
 				}
 
@@ -80,16 +80,16 @@ define(function(require){
 				if (isBrowser) {
 					_$_.ch = channel('/io_X_X');
 					_$_.ch.data = function(m){
-						if(m.reload) location.reload()
+						if(m.reload) { location.reload() }
 					}
 					//_$_.ch = {send : function(){}}
-					window.onerror = function(error, url, linenr){}					
+					window.onerror = function(error, url, linenr){}
 				} else if (isWorker){
 					_$_.ch = {send : function(){}}
 				} else if(isNode){
 					_$_.ch = {send : function(m){
 						try{
-							if(process.send)process.send(m);else process.stderr.write('\x1f' + JSON.stringify(m) + '\x17')
+							if(process.send){process.send(m);}else { process.stderr.write('\x1f' + JSON.stringify(m) + '\x17') }
 						} catch(e){
 							console.log(e, m)
 						}
@@ -99,48 +99,48 @@ define(function(require){
 				var dp = 0 // depth
 				var di = 0
 				var gc = 1
-				
+
 				var lr = 0 // last return
-				
+
 				// function call entry
 
 				if(typeof global !== 'undefined'){
 					_$_.f = function(i, a, t, u){
-						if(lr) _$_.ch.send(lr, 1), lr = 0
+						if(lr) { _$_.ch.send(lr, 1); lr = 0; }
 						// dump arguments
 						dp ++
-						if(!di) di = global.setTimeout(function(){di = dp = 0},0)
+						if(!di) {di = global.setTimeout(function(){di = dp = 0},0) }
 						var r = {i:i, g:gc++, d:dp, u:u, t:global.Date.now()}
 						if(a){
 							r.a = []
-							for(var j = 0;j<a.length;j++) r.a[j] = dump(a[j], 0)
+							for(var j = 0;j<a.length;j++) { r.a[j] = dump(a[j], 0) }
 						} else r.a = null
 						_$_.ch.send(r)
-						return r.g
+						return r.g;
 					}
 				} else {
 					_$_.f = function(i, a, t, u){
-						if(lr) _$_.ch.send(lr, 1), lr = 0
+						if(lr) { _$_.ch.send(lr, 1); lr = 0;}
 						// dump arguments
 						dp ++
-						if(!di) di = setTimeout(function(){di = dp = 0},0)
+						if(!di) { di = setTimeout(function(){di = dp = 0},0) }
 						var r = {i:i, g:gc++, d:dp, u:u, t:Date.now()}
 						if(a){
 							r.a = []
-							for(var j = 0;j<a.length;j++) r.a[j] = dump(a[j], 0)
+							for(var j = 0;j<a.length;j++) { r.a[j] = dump(a[j], 0) }
 						} else r.a = null
 						_$_.ch.send(r)
-						return r.g
+						return r.g;
 					}
 				}
-				
+
 				// callsite annotation for last return
 				_$_.c = function(i, v){
-					if(!lr) return v
+					if(!lr) { return v }
 					lr.c = i
 					_$_.ch.send(lr)
 					lr = 0
-					return v
+					return v;
 				}
 				// function exit
 				_$_.e = function(i, r, v, x){
@@ -166,14 +166,14 @@ define(function(require){
 					return v
 				}
 
-			})()		
+			})()
 		}
 		//TRACE
 	}
 
-	var head 
+	var head
 	function mkHead(){
-	
+
 		// imperfect newline stripper
 		function strip(i){
 			var t = acorn_tools.parse(i)
@@ -207,7 +207,7 @@ define(function(require){
 			return {
 				input:src,//cutUp(cuts,src),
 				output:src,
-				id:iid, 
+				id:iid,
 				d:{}
 			}
 		}
@@ -222,12 +222,12 @@ define(function(require){
 		function cut(i, v){
 			if(i === undefined) throw new Error()
 			var n = {i:i, v:v}
-			cuts.sorted(n, 'i') 
+			cuts.sorted(n, 'i')
 			return n
 		}
-		
+
 		function instrumentFn(n, name, isRoot, parentId){
-			// if the first thing in the body is 
+			// if the first thing in the body is
 			if(n.body && n.body.body && n.body.body[0] &&
 				n.body.body[0].type == 'ExpressionStatement' &&
 				n.body.body[0].expression.type == 'Literal' &&
@@ -247,21 +247,21 @@ define(function(require){
 						ey:p.loc.end.line
 					}
 				}
-				
-				dict[id++] = {x:n.body.loc.start.column, y:n.body.loc.start.line, 
+
+				dict[id++] = {x:n.body.loc.start.column, y:n.body.loc.start.line,
 					ex:n.body.loc.end.column,
 					ey:n.body.loc.end.line,
 					sx:n.loc.start.column,
 					sy:n.loc.start.line,
-					n:name, 
+					n:name,
 					a:args
 				}
 			} else {
 				var fhead = cut(n.start, '')
-				dict[id++] = {x:n.loc.start.column, y:n.loc.start.line, 
+				dict[id++] = {x:n.loc.start.column, y:n.loc.start.line,
 					ex:n.loc.end.column,
 					ey:n.loc.end.line,
-					n:name, 
+					n:name,
 					a:[],
 					root:1
 				}
@@ -285,7 +285,7 @@ define(function(require){
 
 			function logicalExpression(n){
 				var hasLogic = 0
-				// if we have logical expressions we only mark the if 
+				// if we have logical expressions we only mark the if
 				acorn_tools.walkDown(n, {
 					LogicalExpression:function(n, p){
 						// insert ( ) around logical left and right
@@ -306,7 +306,7 @@ define(function(require){
 				})
 				return hasLogic
 			}
-			
+
 			function needSemi(p, pos){
 				if(pos){
 					var c = pos - 1
@@ -319,8 +319,8 @@ define(function(require){
 					if(cc == '(') return false
 				}
 				return p.node.type == 'ExpressionStatement' &&
-						(p.up.node.type == 'BlockStatement' || 
-							p.up.node.type == 'Program' || 
+						(p.up.node.type == 'BlockStatement' ||
+							p.up.node.type == 'Program' ||
 							p.up.node.type == 'SwitchCase')
 			}
 
@@ -332,11 +332,11 @@ define(function(require){
 						VariableDeclarator:  function(n, p){ return name = acorn_tools.stringify(n.id) },
 						AssignmentExpression:function(n, p){ return name = acorn_tools.stringify(n.left) },
 						ObjectExpression:    function(n, p){ return name = acorn_tools.stringify(p.key) },
-						CallExpression:      function(n, p){ 
+						CallExpression:      function(n, p){
 							var id = '' // use deepest id as name
 							acorn_tools.walkDown(n.callee, {Identifier: function(n){id = n.name}})
 							if(id == 'bind') return
-							return name = (n.callee.type == 'FunctionExpression'?'()':id) + '->' 
+							return name = (n.callee.type == 'FunctionExpression'?'()':id) + '->'
 						}
 					})
 					instrumentFn(n, name, false, fnid)
@@ -354,7 +354,7 @@ define(function(require){
 				IfStatement: function(n, p){
 					var b = n.test
 					cut(b.start, gs+'b.b'+id+'=')
-					var m = dict[id++] = {x:n.loc.start.column, y:n.loc.start.line, 
+					var m = dict[id++] = {x:n.loc.start.column, y:n.loc.start.line,
 						ex:n.test.loc.end.column + 1, ey:n.test.loc.end.line}
 					// lets go and split apart all boolean expressions in our test
 					if(logicalExpression(n.test)){
@@ -368,13 +368,13 @@ define(function(require){
 					var b = n.test
 					if(!logicalExpression(n.test)){
 						cut(b.start, (needSemi(p, b.start)?';':'')+'('+gs+'b.b'+id+'=')
-						
+
 						cut(b.end, ')')
-						dict[id++] = {x:b.loc.start.column, y:b.loc.start.line, 
+						dict[id++] = {x:b.loc.start.column, y:b.loc.start.line,
 							ex:b.loc.end.column + 1, ey:b.loc.end.line}
 					}
-				},				
-				SwitchCase : function(n, p){ 
+				},
+				SwitchCase : function(n, p){
 					var b = n.test
 					if(b){
 						cut(n.colon, gs+'b.b'+id+'=1;')
@@ -401,7 +401,7 @@ define(function(require){
 				CallExpression: function(n, p){
 					// only if we are the first of a SequenceExpression
 					if(p.node.type == 'SequenceExpression' && p.node.expressions[0] == n) p = p.up
-					cut(n.start, (needSemi(p, n.start)?';':'')+'('+gs+'.c('+id+',')					
+					cut(n.start, (needSemi(p, n.start)?';':'')+'('+gs+'.c('+id+',')
 					cut(n.end - 1, "))")
 					var a = []
 					for(var i = 0;i<n.arguments.length;i++){
@@ -420,7 +420,7 @@ define(function(require){
 				},
 				NewExpression: function(n, p){
 					if(p.node.type == 'SequenceExpression' && p.node.expressions[0] == n) p = p.up
-					cut(n.start, (needSemi(p, n.start)?';':'')+'('+gs+'.c('+id+',')					
+					cut(n.start, (needSemi(p, n.start)?';':'')+'('+gs+'.c('+id+',')
 					cut(n.end, "))")
 					var a = []
 					for(var i = 0;i<n.arguments.length;i++){
@@ -447,12 +447,12 @@ define(function(require){
 					// catch clauses need to send out a depth-reset message
 					//cut(n.body.start + 1, gs + '.x('+gs+'d,'+gs+'b.x'+id+'='+ac.stringify(n.param)+');')
 					cut(n.body.start + 1, gs+'b.x'+id+'='+acorn_tools.stringify(n.param)+';')
-					
+
 					// lets store the exception as logic value on the catch
 					dict[id++]= {x:n.loc.start.column, y:n.loc.start.line, ex:n.loc.start.column+5,ey:n.loc.start.line}
 				}
 			})
-	
+
 			function addAssign(mark, inj){
 				cut(inj, gs+"b.a"+id+"=")
 				dict[id++] = {x:mark.start.column, y:mark.start.line,	ex:mark.end.column, ey:mark.end.line}
@@ -481,13 +481,13 @@ define(function(require){
 				fhead.v = 'var '+gs+'g'+fnid+'=' +gs + ".f(" + fnid + ",null,0,0);" + s + tryStart
 				cut(n.end, ";" + gs + ".e(" + id + "," + gs + "b)" + tryEnd)
 				dict[id++] = {x:n.loc.end.column, y:n.loc.end.line, ret:fnid, root:1}
-			
+
 			} else {
-				fhead.v = 'var '+gs+'g'+fnid+'=' +gs + ".f(" + fnid + ",arguments,this,"+gs+"g"+parentId+");" + s + tryStart 
+				fhead.v = 'var '+gs+'g'+fnid+'=' +gs + ".f(" + fnid + ",arguments,this,"+gs+"g"+parentId+");" + s + tryStart
 				cut(n.body.end - 1, ";" + gs + ".e(" + id + "," + gs + "b)" + tryEnd)
 				dict[id++] = {x:n.body.loc.end.column, y:n.body.loc.end.line, ret:fnid}
 			}
-		}	
+		}
 
 		instrumentFn(n, file, true, 0)
 
@@ -504,14 +504,14 @@ define(function(require){
 			}
 			s += str.slice(b)
 			return s
-		}	
+		}
 
 		//"_$_.set("+iid+",["+assignId.join(',')+"]);"
 		return {
 			input:src,//cutUp(cuts,src),
-			clean:cutUp(cuts, src), 
-			output:head + cutUp(cuts, src), 
-			id:id, 
+			clean:cutUp(cuts, src),
+			output:head + cutUp(cuts, src),
+			id:id,
 			d:dict
 		}
 	}
