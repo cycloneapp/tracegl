@@ -1,0 +1,14 @@
+{
+	"laxbreak" : true,
+	"camelcase" : true,
+	"curly" : true,
+	"eqeqeq" : true,
+	"freeze" : true,
+	"latedef" : "nofunc",
+	"newcap" : true,
+	"undef" : true,
+	"unused" : "vars",
+	"sub" : false,
+	"browser" : true,
+	"node" : true
+}
