@@ -43,7 +43,7 @@ define(function(require){
 					if(t == 'function') { return "_$_function"; }
 					if(t == 'undefined') { return "_$_undefined"; }
 					if(t == 'object'){
-						if(i === null) return null;
+						if(i === null) { return null; }
 						if(Array.isArray(i)){
 							if(i.length == 0) { return []; }
 							if(d>=max_depth) { return "_$_[..]"; }
@@ -148,12 +148,12 @@ define(function(require){
 					for(var k in r){
 						var j = r[k]
 						if(j !== null){
-							var t = typeof j
-							if(t =='undefined' | t=='function')	r[k] = '_$_' + t
-							else if(t=='object' ) r[k] = dump(j, 0)
-							else if(t == 'number'){
+							var t = typeof j;
+							if(t =='undefined' | t=='function') {	r[k] = '_$_' + t
+							} else if(t=='object' ) { r[k] = dump(j, 0)
+							} else if(t == 'number'){
 								if(j === Infinity) r[k] = '_$_Infinity'
-								if(j === NaN) r[k] = '_$_NaN'
+								if(isNaN(j)) r[k] = '_$_NaN'
 							}
 						}
 					}
@@ -162,8 +162,8 @@ define(function(require){
 					r.d = dp
 					if(arguments.length>2) r.v = dump(v, 0), r.x = x
 					lr = r
-					if(dp>0)dp --
-					return v
+					if(dp>0) {dp -- }
+					return v;
 				}
 
 			})()
@@ -180,8 +180,8 @@ define(function(require){
 			var o = ''
 			t.tokens.walk(function(n){
 				o+= n.t
-				if(n.w.indexOf('\n')!=-1 && !n._c) o += ';'
-				else if(n.w.indexOf(' ')!=-1) o+= ' '
+				if(n.w.indexOf('\n')!=-1 && !n._c) { o += ';'
+				} else if(n.w.indexOf(' ')!=-1) o+= ' '
 			})
 			return o
 		}
@@ -273,9 +273,9 @@ define(function(require){
 				if(!b || !('type' in b)) return
 
 				var x, o
-				if(b.type == 'BlockStatement') x = gs + 'b.l'+id+'++;', o = 1
-				else if (b.type == 'ExpressionStatement') x = gs + 'b.l'+id+'++,', o = 0
-				else if (b.type == 'EmptyStatement') x = gs + 'b.l'+id+'++', o = 0
+				if(b.type == 'BlockStatement') { x = gs + 'b.l'+id+'++;'; o = 1;
+				} else if (b.type == 'ExpressionStatement') { x = gs + 'b.l'+id+'++,'; o = 0
+				} else if (b.type == 'EmptyStatement') x = gs + 'b.l'+id+'++', o = 0
 				if(x){
 					cut(b.start + o, x)
 					loopIds.push(id)
@@ -406,9 +406,9 @@ define(function(require){
 					var a = []
 					for(var i = 0;i<n.arguments.length;i++){
 						var arg = n.arguments[i]
-						if(arg)
+						if(arg) {
 							a.push({x:arg.loc.start.column, y:arg.loc.start.line,ex:arg.loc.end.column, ey:arg.loc.end.line})
-						else a.push(null)
+						} else { a.push(null) }
 					}
 
 					var ce = 0
@@ -425,9 +425,9 @@ define(function(require){
 					var a = []
 					for(var i = 0;i<n.arguments.length;i++){
 						var arg = n.arguments[i]
-						if(arg)
+						if(arg) {
 							a.push({x:arg.loc.start.column, y:arg.loc.start.line,ex:arg.loc.end.column, ey:arg.loc.end.line})
-						else a.push(null)
+						} else a.push(null)
 					}
 					dict[id++] = {isnew:1,x:n.callee.loc.start.column, y:n.callee.loc.start.line, ex:n.callee.loc.end.column, ey:n.callee.loc.end.line, a:a}
 				},
