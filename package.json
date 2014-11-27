@@ -1,5 +1,5 @@
 {
-  "name": "tracegl",
+  "name": "cyclone-tracegl",
   "version": "0.0.1-cyclone",
   "description": "TraceGL is a JavaScript codeflow visualization and debugging tool built using WebGL.",
   "main": "tracegl.js",
