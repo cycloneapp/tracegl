@@ -1,6 +1,6 @@
 {
   "name": "tracegl",
-  "version": "0.0.1",
+  "version": "0.0.1-cyclone",
   "description": "TraceGL is a JavaScript codeflow visualization and debugging tool built using WebGL.",
   "main": "tracegl.js",
   "bin": {
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/tiddolangerak/tracegl.git"
+    "url": "https://github.com/cycloneapp/tracegl.git"
   },
   "scripts": {
     "prepublish": "node tools/packer.js trace/trace_server tracegl.js",
@@ -21,12 +21,13 @@
   ],
   "author": "Rik Arends",
   "maintainers": [
-    "Tiddo Langerak <tiddolangerak@gmail.com>"
+    "Tiddo Langerak <tiddolangerak@gmail.com>",
+    "CycloneApp Team <team@cyclone.pw>"
   ],
   "license": "MPL 2.0",
   "bugs": {
-    "url": "https://github.com/tiddolangerak/tracegl/issues"
+    "url": "https://github.com/cycloneapp/tracegl/issues"
   },
-  "homepage": "https://github.com/tiddolangerak/tracegl",
+  "homepage": "https://github.com/cycloneapp/tracegl",
   "preferGlobal": true
 }
